@@ -20,7 +20,7 @@ class Network:
         self.test_data = test_data
         self.layer_sizes = layer_sizes
         self.classes = classes
-        self.weights = [random_weight_matrix(layer_sizes[i-1], layer_sizes[i]) for i in range(len(layer_sizes))]
+        self.weights = [random_weight_matrix(layer_sizes[i-1]+1, layer_sizes[i]) for i in range(1, len(layer_sizes))]
 
     # Returns a string representation of the network.
     def __str__(self):
@@ -43,7 +43,6 @@ class Network:
             # Replace the value at the index for the class with a 1.
             class_index = self.classes.index(output_value)
             output_vector[class_index] = 1
-
             return output_vector
 
     # Gets the activations of the network caused by a given observation.
@@ -80,10 +79,10 @@ class Network:
     # Returns either (1) the class name of the most probable class for the input observation if a classification
     # problem, or (2) the estimated value if a regression problem.
     def run(self, observation):
-        output_vector = self.feed_forward(observation)
+        output = list(self.feed_forward(observation))
         if self.is_regression():
-            return output_vector[0]
-        max_class_index = output_vector.index(max(output_vector))
+            return output[0]
+        max_class_index = output.index(max(output))
         return self.classes[max_class_index]
 
 
