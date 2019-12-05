@@ -1,5 +1,7 @@
 # network.py
 # Defines an instance of a neural network.
+
+import math
 import numpy as np
 import src.util.activations as af
 from src.data import DataSet
@@ -45,6 +47,14 @@ class Network:
             output_vector[class_index] = 1
             return output_vector
 
+    # Returns a list of "shapes" of each weight matrix. Shapes are tuples in the form (row, col).
+    def get_weight_shapes(self):
+        return [weight.shape for weight in self.weights]
+
+    # Returns the number of weights in the network. Includes weights from bias nodes.
+    def get_num_weights(self):
+        return sum([weight.size for weight in self.weights])
+
     # Gets the activations of the network caused by a given observation.
     # * observation: a numpy array representing the attribute values of a single observation.
     # Returns a list of numpy arrays, with the 0th position being the activation of the input layer, and so on.
@@ -84,6 +94,27 @@ class Network:
             return output[0]
         max_class_index = output.index(max(output))
         return self.classes[max_class_index]
+
+    # Returns the root mean squared error on the specified data set according to the current configuration of weights
+    # in the network.
+    def get_error(self, data_set: DataSet):
+        squared_sum = 0
+        # Sum up the squared sup across all squared differences between the actual class value and the expected value.
+        for example_array, expected_class in data_set.get_data():
+            output = self.run(example_array)
+            squared_sum += (output - expected_class) ** 2
+        return math.sqrt(squared_sum) / len(data_set.get_data())
+
+    # Returns the accuracy on the specified data set according to the current configuration of weights in the network.
+    def get_accuracy(self, data_set: DataSet):
+        correct = 0
+        # Sum the number of correctly classified examples.
+        for example_array, expected_class in data_set.get_data():
+            output = self.run(example_array)
+            if output == expected_class:
+                correct += 1
+        # Divide the number of correct examples by the total number of examples.
+        return correct / len(data_set.get_data())
 
 
 # Generates a matrix with random weights generated according to a normal distribution centered at zero with a standard

@@ -37,8 +37,8 @@ class BackPropagation:
         while True:
             # Check for convergence by evaluating the past self.convergence_size*2 validation metrics (either accuracy
             # or error). We exit if the older half of metrics has a better average than the newer half.
-            metric = self.get_error(validation_data) if self.network.is_regression() else \
-                self.get_accuracy(validation_data)
+            metric = self.network.get_error(validation_data) if self.network.is_regression() else \
+                self.network.get_accuracy(validation_data)
             print(metric)
             convergence_check.append(metric)
             # Wait until the convergence check list has all self.convergence_size*2 items.
@@ -86,27 +86,6 @@ class BackPropagation:
                 self.network.weights[i] -= delta_weights[i]
                 total_dw[i] += delta_weights[i]
         return total_dw
-
-    # Returns the root mean squared error on the specified data set according to the current configuration of weights
-    # in the network.
-    def get_error(self, data_set: DataSet):
-        squared_sum = 0
-        # Sum up the squared sup across all squared differences between the actual class value and the expected value.
-        for example_array, expected_class in data_set.get_data():
-            output = self.network.run(example_array)
-            squared_sum += (output - expected_class) ** 2
-        return math.sqrt(squared_sum) / len(data_set.get_data())
-
-    # Returns the accuracy on the specified data set according to the current configuration of weights in the network.
-    def get_accuracy(self, data_set: DataSet):
-        correct = 0
-        # Sum the number of correctly classified examples.
-        for example_array, expected_class in data_set.get_data():
-            output = self.network.run(example_array)
-            if output == expected_class:
-                correct += 1
-        # Divide the number of correct examples by the total number of examples.
-        return correct / len(data_set.get_data())
 
     # Performs back propagation of a specified example given an expected output.
     def back_propagation(self, example: np.ndarray, expected: np.ndarray):
