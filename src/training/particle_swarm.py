@@ -7,9 +7,26 @@ import src.data as ds
 from src.network import Network
 from functools import reduce
 
+# The amount each new average metric needs to be better than the old average metric for the training process to
+# continue.
+CONVERGENCE_THRESHOLD = .0001
 
+
+# Used to create an instance of the particle swarm optimization algorithm. Trains a neural network according to the
+# movement of particles through the state space (i.e. the possible weights in the network), evaluating fitness on the
+# network's training set.
 class ParticleSwarm:
 
+    # Creates an instance of the particle swarm algorithm. The particle swarm trains the given network according to the
+    # given parameters.
+    # * network: the network object to train.
+    # * pop_size: the size of the population; the number of particles.
+    # * cog_factor: the coefficient influencing how much to bias velocity towards a particle's personal best state.
+    # * soc_factor: the coefficient influencing how much to bias velocity towards the global best state.
+    # * max_velocity: the maximum velocity possible, ensuring no velocity vector has a magnitude larger than this.
+    # * convergence_size: how many items to evaluate when determining whether convergence has occurred.
+    # Creating the ParticleSwarm strategy does not train the network. To train the network, the train() method must be
+    # called.
     def __init__(self, network: Network, pop_size: int, cog_factor: float, soc_factor: float, inertia: float, max_velocity: float, convergence_size: int):
         self.network = network
         self.pop_size = pop_size
@@ -33,12 +50,41 @@ class ParticleSwarm:
 
     # Begins the training process. Moves each particle according to its velocity, and then updates the velocity of each
     # particle.
-    # TODO: train needs to update the network's weights with the best weights found.
-    # TODO: add convergence check (use convergence_size parameter) similar to backprop.
     def train(self):
-        for i in range(100):
+        # Fitness history will be a list of the global best fitness of each run/
+        fitness_history = []
+        # We will need to store the best_particle to return when the algorithm has converged. This is distinct from the
+        # "global best" particle, because it is possible that our final loop results in a global best that is less fit
+        # compared to the global best of a different iteration of the while loop. So we must store the best we have ever
+        # seen across all runs.
+        best_particle, best_particle_fitness = (None, float("-inf"))
+
+        while True:
+            # (1) Determine the global best particle (based on fitness), store as g_best.
             g_best = self.__get_global_best()
-            print(g_best.get_fitness())
+            g_best_fitness = g_best.get_fitness()
+
+            # (2) If the current global best is better than any we have seen, update best_particle.
+            if g_best_fitness > best_particle_fitness:
+                best_particle, best_particle_fitness = g_best, g_best_fitness
+
+            # (3) Determine if we have reached convergence by evaluating the fitness of the last n runs and comparing it
+            # to the n runs before that, where n is self.convergence_size. If converged, update then network with the
+            # best weights we have ever seen.
+            fitness_history.append(g_best.get_fitness())
+            # Only do the convergence check if we have enough runs (i.e. 2 * self.convergence_size).
+            if len(fitness_history) > self.convergence_size * 2:
+                fitness_history.pop(0)
+                older_fitness = sum(fitness_history[:self.convergence_size])
+                newer_fitness = sum(fitness_history[self.convergence_size:])
+                # Exit if our fitness has decreased over time, with some added threshold to prevent extremely small
+                # gains from preventing the algorithm from exiting.
+                if newer_fitness <= older_fitness + CONVERGENCE_THRESHOLD:
+                    self.network.weights = best_particle.encode()
+                    return
+
+            # (4) Finally, we can go through the particles and update them. This involves moving them according to their
+            # current velocity and then updating their velocity according to the global best and the tunable parameters.
             for particle in self.particles:
                 particle.move()
                 particle.update_velocity(self.cog_factor, self.soc_factor, self.inertia, g_best.state)
