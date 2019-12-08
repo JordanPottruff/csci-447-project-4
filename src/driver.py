@@ -32,7 +32,28 @@ def classification_particle_swarm(data_set, data_set_name, classes, pop_size, co
             accuracy = network.get_accuracy(test)
             average_accuracy += accuracy / 10
             print("----Accuracy of fold {}: {:.2f}".format(fold_i, accuracy))
-    print("--Final Accuracy: {.2f}".format(average_accuracy))
+    print("--Final accuracy: {.2f}".format(average_accuracy))
+
+
+def regression_particle_swarm(data_set, data_set_name, pop_size, cog_factor, soc_factor, inertia, max_velocity, convergence_size):
+    print("Running regression on: {}".format(data_set_name))
+    network_layouts = get_network_layouts(data_set.num_cols, 1)
+
+    average_accuracy = 0
+    folds = data_set.validation_folds(10)
+    for layer_sizes in network_layouts:
+        for fold_i, fold in enumerate(folds):
+            train = fold['train']
+            test = fold['test']
+
+            network = Network(train, test, layer_sizes)
+            pso = ParticleSwarm(network, pop_size, cog_factor, soc_factor, inertia, max_velocity, convergence_size)
+            pso.train()
+
+            error = network.get_error(test)
+            average_accuracy += error / 10
+            print("----Error of fold {}: {:.2f}".format(fold_i, error))
+    print("--Final error: {.2f}".format(average_accuracy))
 
 
 def main():
@@ -51,13 +72,21 @@ def main():
     machine_data = data.get_machine_data()
     wine_data = data.get_wine_data()
 
-    classification_particle_swarm(car_data, "car.data", ["acc", "unacc", "good", "vgood"],
-                                  pop_size=50,
-                                  cog_factor=0.1,
-                                  soc_factor=0.07,
-                                  inertia=0.01,
-                                  max_velocity=1000000,
-                                  convergence_size=20)
+    # classification_particle_swarm(car_data, "car.data", ["acc", "unacc", "good", "vgood"],
+    #                               pop_size=50,
+    #                               cog_factor=0.1,
+    #                               soc_factor=0.07,
+    #                               inertia=0.01,
+    #                               max_velocity=1000000,
+    #                               convergence_size=20)
+
+    regression_particle_swarm(machine_data, "machine.data",
+                              pop_size=500,
+                              cog_factor=0.2,
+                              soc_factor=0.1,
+                              inertia=0.05,
+                              max_velocity=100000,
+                              convergence_size=20)
 
 
 main()

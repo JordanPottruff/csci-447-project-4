@@ -60,7 +60,6 @@ class ParticleSwarm:
         best_particle, best_particle_fitness = (None, float("-inf"))
 
         while True:
-            print(best_particle_fitness)
             # (1) Determine the global best particle (based on fitness), store as g_best.
             g_best = self.__get_global_best()
             g_best_fitness = g_best.get_fitness()
