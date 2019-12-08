@@ -33,7 +33,7 @@ def classification_particle_swarm(data_set, data_set_name, classes, pop_size, co
             accuracy = network.get_accuracy(test)
             average_accuracy += accuracy / 10
             print("----Accuracy of fold {}: {:.2f}".format(fold_i, accuracy))
-        print("--Final accuracy: {.2f}".format(average_accuracy))
+        print("--Final accuracy: {:.2f}".format(average_accuracy))
 
 
 def regression_particle_swarm(data_set, data_set_name, pop_size, cog_factor, soc_factor, inertia, max_velocity, convergence_size):
@@ -55,7 +55,7 @@ def regression_particle_swarm(data_set, data_set_name, pop_size, cog_factor, soc
             error = network.get_error(test)
             average_error += error / 10
             print("----Error of fold {}: {:.2f}".format(fold_i, error))
-        print("--Final error: {.2f}".format(average_error))
+        print("--Final error: {:.2f}".format(average_error))
 
 
 def main():
@@ -83,7 +83,7 @@ def main():
     #                               convergence_size=20)
 
     regression_particle_swarm(machine_data, "machine.data",
-                              pop_size=500,
+                              pop_size=100,
                               cog_factor=0.2,
                               soc_factor=0.1,
                               inertia=0.05,
