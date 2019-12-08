@@ -123,4 +123,4 @@ trainset, testset = dataset.partition(.80)
 # test with number of features as size of input layer, guessing for hidden, and 1 output node size as regression is used
 n = Network(trainset, testset, [6, 3, 3, 3, 1])
 x = DiffEvolution(n, .1, .9, 39)
-
+print(x)
