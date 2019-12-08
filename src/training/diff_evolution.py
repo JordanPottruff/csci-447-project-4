@@ -69,43 +69,44 @@ class DiffEvolution:
     def recombination(self, loc, mutant):
         """Do we perform crossover"""
         for i in range(self.individual_feature_size):
-            we_do_replace = random.uniform(0, 1) < self.recombinationC
+            we_do_replace = random.uniform(0, 1) > self.recombinationC
             if we_do_replace:
+                #print("We replaced" + str(i))
                 self.test_pop[loc][i] = mutant[i]
 
 
     def run(self):
-        iteration = 1000
-        best_performance = []
+        iteration = 100
+        best_performance = 0
+        best_individual = []
         for i in range(iteration):  # For i amt of iterations
             for loc in range(len(self.population) - 1):  # For each location
                 mutant = self.mutation(loc)  # Mutate
-                print("Mutant: " + str(mutant))
+                #print("Mutant: " + str(mutant))
                 individual = self.population[loc]
-                print("Individual: " + str(individual))
+                #print("Individual: " + str(individual))
                 self.recombination(loc, mutant)  # Perform crossover
-                print("Test Population: " + str(self.test_pop[loc]))
+                #print("Test Population: " + str(self.test_pop[loc]))
+
                 # update weights of network
                 old_performance = self.get_fitness(individual)
-                print("Old Performace: " + str(old_performance))
+                #print("Old Performace: " + str(old_performance))
                 test_pop_individual = self.test_pop[loc]  # Test with new weights
                 new_performance = self.get_fitness(test_pop_individual)
-                print("New Performace: " + str(new_performance))
-
+                #print("New Performace: " + str(new_performance))
+                #print("-----------------")
                 if new_performance > best_performance:
                     best_performance = new_performance
+                    best_individual = self.test_pop[loc]
 
                 if old_performance < new_performance:  # if performance better we replace the population with the mutant
                     self.network.weights = self.test_pop[loc]  # These weights were better
                     self.population = self.test_pop  # Lets update population to reflect this
-                    self.final_performance = new_performance
-                self.final_performance = old_performance
-        return self.final_performance
+        print(best_performance)
 
     def encode(self, individual):
         weights = []
         i = 0
-        print(self.network.get_weight_shapes())
         for shape in self.network.get_weight_shapes():
             size = reduce((lambda x, y: x * y), shape)
             weights.append(np.reshape(individual[i:i + size], shape))
@@ -134,4 +135,3 @@ trainset, testset = dataset.partition(.80)
 # test with number of features as size of input layer, guessing for hidden, and 1 output node size as regression is used
 n = Network(trainset, testset, [6, 3, 3, 3, 1])
 x = DiffEvolution(n, .1, .9, 39)
-print(x)
