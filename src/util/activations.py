@@ -40,3 +40,6 @@ def softmax(self, z):
     numerator = np.exp(z)
     denominator = np.sum(numerator)
     return numerator/denominator
+
+
+np.seterr(over="ignore")

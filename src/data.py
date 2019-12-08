@@ -88,7 +88,12 @@ class DataSet:
         for i in range(n):
             # Each test and training component are a DataSet, not a direct list of numpy arrays.
             folds[i]['test'] = DataSet(segments[i])
-            folds[i]['train'] = DataSet(segments[:i])
+            training_data = []
+            for segment_i in range(n):
+                for elem in segments[segment_i]:
+                    if segment_i != i:
+                        training_data.append(elem)
+            folds[i]['train'] = DataSet(training_data)
         return folds
 
 
