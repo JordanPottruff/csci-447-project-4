@@ -1,5 +1,4 @@
 from src.training.particle_swarm import ParticleSwarm
-from src.data import DataSet
 import src.data as data
 from src.network import Network
 
