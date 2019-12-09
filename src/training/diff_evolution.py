@@ -46,7 +46,7 @@ class DiffEvolution:
         """Initialize Population by randomly selecting feature values for each individual within the population."""
         bounds = -2000, 2000
         population = []
-        print("Individual Feature Size" + str(self.individual_feature_size))
+        #print("Individual Feature Size" + str(self.individual_feature_size))
         for individual in range(self.population_size):
             individual = np.random.uniform(low=bounds[0], high=bounds[1],
                                             size=self.individual_feature_size)  # Create Individual
@@ -94,7 +94,8 @@ class DiffEvolution:
                 #print("Individual: " + str(individual))
                 self.recombination(loc, mutant)  # Perform crossover
                 #print("Test Population: " + str(self.test_pop[loc]))
-
+                #print(individual)
+                #print(self.get_fitness(individual))
                 old_performance = self.get_fitness(individual)
                 #print("Old Performace: " + str(old_performance))
                 test_pop_individual = self.test_pop[loc]  # Test with new weights
@@ -107,12 +108,12 @@ class DiffEvolution:
                     best_individual = self.test_pop[loc]
 
                 if old_performance < new_performance:  # if performance better we replace the population with the mutant
-                    self.network.weights = self.test_pop[loc]  # These weights were better
+                    self.network.weights = self.encode(self.test_pop[loc])  # These weights were better
                     self.population = self.test_pop  # Lets update population to reflect this
 
         #print(best_performance)
         #print(best_individual)
-        self.network.weights = best_individual
+        self.network.weights = self.encode(best_individual)
 
     def encode(self, individual):
         """Encodes a vector into matricies that represent the Feed Forward Neural Network"""
@@ -137,12 +138,5 @@ class DiffEvolution:
         self.network.weights = old_weights
         return fitness
 
-
-# dataset = get_machine_data()
-# trainset, testset = dataset.partition(.80)
-# #print(trainset)
-# # test with number of features as size of input layer, guessing for hidden, and 1 output node size as regression is used
-# n = Network(trainset, testset, [6, 3, 3, 3, 1])
-# x = DiffEvolution(n, .1, .9, 40)
 
 
