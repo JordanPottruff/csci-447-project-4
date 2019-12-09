@@ -1,5 +1,5 @@
 # particle_swarm.py
-# Implementation of particle swarm optimization (PSO).
+# Implementation of particle swarm optimization (PSO) and displays intermediate steps for video.
 
 import random
 import numpy as np

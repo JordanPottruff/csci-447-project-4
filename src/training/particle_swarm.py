@@ -3,7 +3,6 @@
 
 import random
 import numpy as np
-import src.data as ds
 from src.network import Network
 from functools import reduce
 
@@ -27,7 +26,8 @@ class ParticleSwarm:
     # * convergence_size: how many items to evaluate when determining whether convergence has occurred.
     # Creating the ParticleSwarm strategy does not train the network. To train the network, the train() method must be
     # called.
-    def __init__(self, network: Network, pop_size: int, cog_factor: float, soc_factor: float, inertia: float, max_velocity: float, convergence_size: int):
+    def __init__(self, network: Network, pop_size: int, cog_factor: float, soc_factor: float, inertia: float,
+                 max_velocity: float, convergence_size: int):
         self.network = network
         self.pop_size = pop_size
         self.cog_factor = cog_factor

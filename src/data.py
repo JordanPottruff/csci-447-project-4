@@ -96,10 +96,7 @@ class DataSet:
             folds[i]['train'] = DataSet(training_data)
         return folds
 
-
-#
 # Below are functions for creating DataSet objects of the various data files as well as helper code.
-#
 
 
 # Returns the abalone data as a DataSet object.

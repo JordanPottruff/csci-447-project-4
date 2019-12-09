@@ -1,5 +1,5 @@
-# backpropagation.py
-# Defines the back propagation algorithm for learning a neural network.
+# diff_evolution_video.py
+# Defines the differential evolution algorithm for learning a neural network and display intermediate steps for video.
 
 import math
 import numpy as np
@@ -9,21 +9,21 @@ from src.network import Network
 from src.data import *
 from functools import reduce
 
-class DiffEvolution:
-    # DE is a population based optimizer that perturbs vectors using scaled differences of randomly generated
-    # individual vectors
 
+# DE is a population based optimizer that perturbs vectors using scaled differences of randomly generated
+# individual vectors
+class DiffEvolution:
     # Creates an instance of the differential evolution (DE) algorithm. The DE trains the given network according to the
     # given parameters.
     # * network: the network object to train. (fitness function / objective function)
     # * pop_size: the size of the population; the number of particles.
     # * mutationF: the coefficient influencing how much to bias amount of mutation occurring.
     # * recombinationC: the coefficient influencing how much cross over occurs between the individual and mutant.
-    def __init__(self, network: Network, mutationF: float, recombinationC: float, popsize=30):
+    def __init__(self, network: Network, mutation_f: float, recombination_c: float, pop_size=30):
         self.network = network  # Minimize the objective function by optimizing the values of the network weights
-        self.mutationF = mutationF  # Mutation rate
-        self.recombinationC = recombinationC  # Recombination rate
-        self.population_size = popsize
+        self.mutationF = mutation_f  # Mutation rate
+        self.recombinationC = recombination_c  # Recombination rate
+        self.population_size = pop_size
         self.individual_feature_size = self.network.get_num_weights()  # Individuals features
         self.population = self.initialize_population()  # Initialize Population
         self.run_nn_on_pop_weights()
@@ -46,13 +46,11 @@ class DiffEvolution:
         """Initialize Population by randomly selecting feature values for each individual within the population."""
         bounds = -2000, 2000
         population = []
-        #print("Individual Feature Size" + str(self.individual_feature_size))
         for individual in range(self.population_size):
             individual = np.random.uniform(low=bounds[0], high=bounds[1],
-                                            size=self.individual_feature_size)  # Create Individual
+                                           size=self.individual_feature_size)  # Create Individual
             population.append(individual)  # Add individual to population
         return population
-
 
     def mutation(self, loc):
         """Mutation is used to allow us to explore our space to find a good solution. To do this we select three
@@ -76,9 +74,7 @@ class DiffEvolution:
         for i in range(self.individual_feature_size):
             we_do_replace = random.uniform(0, 1) > self.recombinationC
             if we_do_replace:
-                #print("We replaced" + str(i))
                 self.test_pop[loc][i] = mutant[i]
-
 
     def run(self):
         """Runs the differential evolution optimization on each individual and finds the most fit individual within
@@ -105,11 +101,8 @@ class DiffEvolution:
                 # Print State,
                 print("--fitness: " + str(self.get_fitness(individual)))
                 old_performance = self.get_fitness(individual)
-                #print("Old Performace: " + str(old_performance))
                 test_pop_individual = self.test_pop[loc]  # Test with new weights
                 new_performance = self.get_fitness(test_pop_individual)
-                #print("New Performace: " + str(new_performance))
-                #print("-----------------")
 
                 if new_performance > best_performance:
                     best_performance = new_performance
@@ -137,7 +130,8 @@ class DiffEvolution:
             i += size
         return weights
 
-    # Returns the fitness of the individuals current state. The fitness is evaluated on the training set for the network.
+    # Returns the fitness of the individuals current state.
+    # The fitness is evaluated on the training set for the network.
     # The fitness is accuracy if a classification problem, and the inverse error for regression.
     def get_fitness(self, individual):
         """Determine the fitness of an individual"""
@@ -149,6 +143,3 @@ class DiffEvolution:
             fitness = self.network.get_accuracy(self.network.training_data)
         self.network.weights = old_weights
         return fitness
-
-
-

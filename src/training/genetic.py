@@ -4,11 +4,9 @@
 import random
 import itertools
 from functools import reduce
-
 import math
 import numpy
 import numpy as np
-import src.data as ds
 from src.network import Network
 
 # Search space for the neural network weights, tunable

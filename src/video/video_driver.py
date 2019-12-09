@@ -1,10 +1,16 @@
+# Driver for project video.
+# Executes all algorithms, displaying intermediate steps for each. We tuned the parameters for fast convergence rather
+# than fitness to expedite the runtime of the algorithm.
 
 import src.data as data
 from src.video.particle_swarm_video import ParticleSwarm
 from src.video.genetic_video import Genetic
+from src.video.diff_evolution_video import DiffEvolution
 from src.network import Network
 
 
+# Runs the PSO algorithm on the image data set. Displays the state, fitness, particle, and weights as the
+# intermediate steps.
 def test_particle_swarm_image():
     image_data = data.get_segmentation_data("../../data/segmentation.data")
     training_data, test_data = image_data.partition(.8)
@@ -19,7 +25,8 @@ def test_particle_swarm_image():
     print("\n\nAccuracy on test set: {}%".format(accuracy))
 
 
-# Classification
+# The following 6 function executes genetic algorithms on all data sets. For the genetic algorithm, we display
+# the fitness and the vector as the intermediate steps.
 def test_genetic_machine():
     population_size = 20
     crossover_prob = 0.5
@@ -126,21 +133,14 @@ def test_genetic_abalone():
     accuracy = network.get_accuracy(testing_data) * 100
     print("\n\nAccuracy on test set: {}%".format(accuracy))
 
-# test_particle_swarm_image()
 
-# Video Files for the GA: car.data (classification) and machine.data (regression) executes the fastest, on average.
-# test_genetic_image()
-# test_genetic_car()
-# test_genetic_abalone()
-
-# test_genetic_forest_fires()
-# test_genetic_wine()
-# test_genetic_machine()
-
+# Executes differential evolution algorithm on the image data. We display the mutant, individual, after recomination
+# vectors, and the fitness for each individual as the intermediate steps.
 def test_diff_evolution_image():
     image_data = data.get_segmentation_data("../../data/segmentation.data")
     training_data, test_data = image_data.partition(.8)
-    network = Network(training_data, test_data, [19, 13, 7], ["BRICKFACE", "SKY", "FOLIAGE", "CEMENT", "WINDOW", "PATH", "GRASS"])
+    network = Network(training_data, test_data, [19, 13, 7], ["BRICKFACE", "SKY", "FOLIAGE",
+                                                              "CEMENT", "WINDOW", "PATH", "GRASS"])
 
     diff_evo = DiffEvolution(network, mutationF=.1, recombinationC=.9, popsize=20)
     diff_evo.run()
@@ -148,4 +148,13 @@ def test_diff_evolution_image():
     accuracy = network.get_accuracy(test_data)*100
     print("\n\nAccuracy on test set: {}%".format(accuracy))
 
-test_diff_evolution_image()
+# test_diff_evolution_image()
+# test_particle_swarm_image()
+
+# Video Files for the GA: car.data (classification) and machine.data (regression) executes the fastest, on average.
+# test_genetic_image()
+# test_genetic_car()
+# test_genetic_abalone()
+# test_genetic_forest_fires()
+# test_genetic_wine()
+# test_genetic_machine()

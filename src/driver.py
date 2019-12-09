@@ -1,10 +1,17 @@
+# driver.py
+# Entry file for executing our experiment design for PSO, Genetic. and Differential Evolution algorithms.
+# The driver contains function to run regression and classification data sets per each algorithm.
+
 from src.training.particle_swarm import ParticleSwarm
 import src.data as data
 from src.network import Network
 from src.training.diff_evolution import DiffEvolution
-from  src.training.genetic import Genetic
+from src.training.genetic import Genetic
 
 
+# Tuned parameter for number of hidden layers (0, 1, and 2) and the number of nodes per each hidden layer.
+# The number of nodes in the hidden layers is calculated by the total number of node in the input and output dividing
+# by two, rounding down.
 def get_network_layouts(num_in, num_out):
     avg_in_out = (num_in + num_out) // 2
 
@@ -37,6 +44,7 @@ def classification_particle_swarm(data_set, data_set_name, classes, pop_size, co
         print("--Final accuracy: {:.2f}".format(average_accuracy))
 
 
+# Runs the PSO algorithm on a regression data set using 10 folds cross validation.
 def regression_particle_swarm(data_set, data_set_name, pop_size, cog_factor, soc_factor, inertia, max_velocity, convergence_size):
     print("Running regression on: {}".format(data_set_name))
     network_layouts = get_network_layouts(data_set.num_cols, 1)
@@ -59,8 +67,8 @@ def regression_particle_swarm(data_set, data_set_name, pop_size, cog_factor, soc
         print("--Final error: {:.2f}".format(average_error))
 
 
-# Runs PSO on a classification data set using 10-fold cross validation.
-def classification_diff_evol(data_set, data_set_name, classes, mutationF, recombinationC, pop_size):
+# Runs differential evolution algorithm on a classification data set using 10-fold cross validation.
+def classification_diff_evolution(data_set, data_set_name, classes, mutation_f, recombination_c, pop_size):
     print("Running classification on: {}".format(data_set_name))
     network_layouts = get_network_layouts(data_set.num_cols, len(classes))
 
@@ -73,8 +81,8 @@ def classification_diff_evol(data_set, data_set_name, classes, mutationF, recomb
             test = fold['test']
 
             network = Network(train, test, layer_sizes, classes)
-            diffevo = DiffEvolution(network, mutationF, recombinationC, pop_size)
-            diffevo.run()
+            diff_evolution = DiffEvolution(network, mutation_f, recombination_c, pop_size)
+            diff_evolution.run()
 
             accuracy = network.get_accuracy(test)
             average_accuracy += accuracy / 10
@@ -82,7 +90,8 @@ def classification_diff_evol(data_set, data_set_name, classes, mutationF, recomb
         print("--Final accuracy: {:.2f}".format(average_accuracy))
 
 
-def regression_diff_evol(data_set, data_set_name, mutationF, recombinationC, pop_size):
+# Runs the differential evolution algorithm on a regression data set using 10-fold cross validation.
+def regression_diff_evolution(data_set, data_set_name, mutation_f, recombination_c, pop_size):
     print("Running regression on: {}".format(data_set_name))
     network_layouts = get_network_layouts(data_set.num_cols, 1)
 
@@ -95,8 +104,8 @@ def regression_diff_evol(data_set, data_set_name, mutationF, recombinationC, pop
             test = fold['test']
 
             network = Network(train, test, layer_sizes)
-            diffevo = DiffEvolution(network, mutationF, recombinationC, pop_size)
-            diffevo.run()
+            diff_evolution = DiffEvolution(network, mutation_f, recombination_c, pop_size)
+            diff_evolution.run()
 
             error = network.get_error(test)
             average_error += error / 10
@@ -172,55 +181,46 @@ def main():
     machine_data = data.get_machine_data()
     wine_data = data.get_wine_data()
 
-    # classification_particle_swarm(abalone_data, "abalone.data", abalone_data_classes,
-    #                               pop_size=50,
-    #                               cog_factor=0.1,
-    #                               soc_factor=0.07,
-    #                               inertia=0.01,
-    #                               max_velocity=100000,
-    #                               convergence_size=20)
-    #
-    # classification_particle_swarm(car_data, "car.data", ["acc", "unacc", "good", "vgood"],
-    #                               pop_size=50,
-    #                               cog_factor=0.1,
-    #                               soc_factor=0.07,
-    #                               inertia=0.01,
-    #                               max_velocity=1000000,
-    #                               convergence_size=20)
-    #
-    # classification_particle_swarm(segmentation_data, "segmentation.data", segmentation_classes,
-    #                               pop_size=50,
-    #                               cog_factor=0.1,
-    #                               soc_factor=0.07,
-    #                               max_velocity=100000,
-    #                               convergence_size=20)
-
-    # regression_particle_swarm(machine_data, "machine.data",
-    #                           pop_size=100,
-    #                           cog_factor=0.2,
-    #                           soc_factor=0.1,
-    #                           inertia=0.05,
-    #                           max_velocity=100000,
-    #                           convergence_size=20)
-    #
-    # classification_diff_evol(machine_data, "machine.data", ["acc", "unacc", "good", "vgood"],
-    #                  mutationF=.1,
-    #                  recombinationC=.9,
-    #                  pop_size=40,
-    #                  )
-
-    # regression_diff_evol(machine_data, "machine.data",
-    #                      mutationF=.1,
-    #                      recombinationC=.9,
-    #                      pop_size=40,
-    #                      )
-
+    # Tunable parameter for the genetic algorithm.
     population_size = 20
     crossover_probability = 0.5
     creep = 100
     mutation_prop = 0.05
     tournament_size = 2
     convergence_size = 50
+
+    # Entry main function for running our experiments with all 3 algorithms: GA, DiffE, and PSO.
+
+    classification_particle_swarm(abalone_data, "abalone.data", abalone_data_classes,
+                                  pop_size=50,
+                                  cog_factor=0.1,
+                                  soc_factor=0.07,
+                                  inertia=0.01,
+                                  max_velocity=100000,
+                                  convergence_size=20)
+
+    classification_particle_swarm(car_data, "car.data", ["acc", "unacc", "good", "vgood"],
+                                  pop_size=50,
+                                  cog_factor=0.1,
+                                  soc_factor=0.07,
+                                  inertia=0.01,
+                                  max_velocity=1000000,
+                                  convergence_size=20)
+
+    classification_particle_swarm(segmentation_data, "segmentation.data", segmentation_classes,
+                                  pop_size=50,
+                                  cog_factor=0.1,
+                                  soc_factor=0.07,
+                                  max_velocity=100000,
+                                  convergence_size=20)
+
+    regression_particle_swarm(machine_data, "machine.data",
+                              pop_size=100,
+                              cog_factor=0.2,
+                              soc_factor=0.1,
+                              inertia=0.05,
+                              max_velocity=100000,
+                              convergence_size=20)
 
     classification_genetic(car_data, "car.data", car_data_classes,
                            population_size=population_size,
@@ -269,5 +269,15 @@ def main():
                        mutation_prob=mutation_prop,
                        tournament_size=tournament_size,
                        convergence_size=convergence_size)
+
+    classification_diff_evolution(machine_data, "machine.data", ["acc", "unacc", "good", "vgood"],
+                                  mutation_f=.1,recombination_c=.9,pop_size=40)
+
+    regression_diff_evolution(machine_data, "machine.data",
+                              mutation_f=.1,
+                              recombination_c=.9,
+                              pop_size=40,
+                              )
+
 
 main()

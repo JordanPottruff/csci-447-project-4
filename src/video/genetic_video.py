@@ -1,14 +1,12 @@
 # genetic.py
-# Implements genetic algorithm with neural networks
+# Implements genetic algorithm with neural networks and displays intermediate steps for video
 
 import random
 import itertools
 from functools import reduce
-
 import math
 import numpy
 import numpy as np
-import src.data as ds
 from src.network import Network
 
 # Search space for the neural network weights, tunable
@@ -18,9 +16,10 @@ UPPER_BOUND = 100000
 # The amount of fitness increase used in the average metric to continue the learning process
 CONVERGENCE_THRESHOLD = .0001
 
+
 # Creates an individual in a population. Each weight matrix of the neural network is represented by an individual
 # denoted by a vector. An individual takes in a network, used to construct the length of the vector and calculate
-# the fitness, the vector (initally set to random), and each vector is predetermined to mutate. The individual class
+# the fitness, the vector (initially set to random), and each vector is predetermined to mutate. The individual class
 # holds instance of the network, fitness, and the vector.
 class Individual:
     def __init__(self, network: Network, vector, mutation_prob=0.0, creep_variance=1.0):
@@ -57,9 +56,11 @@ class Individual:
             i += size
         return weights
 
+
 # Coin simulation based on a probability.
 def flip(prob):
     return True if random.random() < prob else False
+
 
 # Implementation class for the genetic algorithm. The class trains the neural network by simulating many weights,
 # converges to the better fitness individual by crossover, mutation, selection, and replacement. The following genetic
@@ -67,7 +68,7 @@ def flip(prob):
 # generational replacement as the parameters. The genetic algorithm must be initiated by executing the train method.
 class Genetic:
     def __init__(self, network: Network, population_size: int, crossover_prob: float,
-            creep_variance: float, mutation_prob: float, tournament_size: int, convergence_size: int):
+                 creep_variance: float, mutation_prob: float, tournament_size: int, convergence_size: int):
         self.network = network
         self.population_size = population_size
         self.crossover_prob = crossover_prob
@@ -75,7 +76,9 @@ class Genetic:
         self.mutation_prob = mutation_prob
         self.tournament_size = tournament_size
         self.convergence_size = convergence_size
-        self.population = [Individual(network, np.random.uniform(low=LOWER_BOUND, high=UPPER_BOUND, size=network.get_num_weights())) for i in range(population_size)]
+        self.population = [Individual(network, np.random.uniform(low=LOWER_BOUND, high=UPPER_BOUND,
+                                                                 size=network.get_num_weights()))
+                           for i in range(population_size)]
 
     # Returns the highest fitness individual from the population.
     def get_highest_fitness(self):
@@ -219,6 +222,7 @@ class Genetic:
                     print("\nConverged!")
                     print("Most fit individual: ")
                     print("--fitness: {}".format(global_best_individual.fitness))
-                    print("--vector: {}".format(np.array2string(global_best_individual.vector, precision=2, max_line_width=10000)))
+                    print("--vector: {}".format(np.array2string(global_best_individual.vector, precision=2,
+                                                                max_line_width=10000)))
                     print("--took " + str(gen_num) + " generation")
                     return
