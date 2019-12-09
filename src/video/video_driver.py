@@ -4,6 +4,7 @@ from src.video.particle_swarm_video import ParticleSwarm
 from src.video.genetic_video import Genetic
 from src.network import Network
 
+
 def test_particle_swarm_image():
     image_data = data.get_segmentation_data("../../data/segmentation.data")
     training_data, test_data = image_data.partition(.8)
@@ -127,11 +128,13 @@ def test_genetic_abalone():
 
 # test_particle_swarm_image()
 
+
+# Video Files for the GA: car.data (classification) and machine.data (regression) executes the fastest, on average.
 # test_genetic_image()
-test_genetic_car()
+# test_genetic_car()
 # test_genetic_abalone()
 
 # test_genetic_forest_fires()
 # test_genetic_wine()
-test_genetic_machine()
+# test_genetic_machine()
 
