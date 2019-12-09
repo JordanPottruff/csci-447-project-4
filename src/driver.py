@@ -172,28 +172,28 @@ def main():
     machine_data = data.get_machine_data()
     wine_data = data.get_wine_data()
 
-    classification_particle_swarm(abalone_data, "abalone.data", abalone_data_classes,
-                                  pop_size=50,
-                                  cog_factor=0.1,
-                                  soc_factor=0.07,
-                                  inertia=0.01,
-                                  max_velocity=100000,
-                                  convergence_size=20)
-
-    classification_particle_swarm(car_data, "car.data", ["acc", "unacc", "good", "vgood"],
-                                  pop_size=50,
-                                  cog_factor=0.1,
-                                  soc_factor=0.07,
-                                  inertia=0.01,
-                                  max_velocity=1000000,
-                                  convergence_size=20)
-
-    classification_particle_swarm(segmentation_data, "segmentation.data", segmentation_classes,
-                                  pop_size=50,
-                                  cog_factor=0.1,
-                                  soc_factor=0.07,
-                                  max_velocity=100000,
-                                  convergence_size=20)
+    # classification_particle_swarm(abalone_data, "abalone.data", abalone_data_classes,
+    #                               pop_size=50,
+    #                               cog_factor=0.1,
+    #                               soc_factor=0.07,
+    #                               inertia=0.01,
+    #                               max_velocity=100000,
+    #                               convergence_size=20)
+    #
+    # classification_particle_swarm(car_data, "car.data", ["acc", "unacc", "good", "vgood"],
+    #                               pop_size=50,
+    #                               cog_factor=0.1,
+    #                               soc_factor=0.07,
+    #                               inertia=0.01,
+    #                               max_velocity=1000000,
+    #                               convergence_size=20)
+    #
+    # classification_particle_swarm(segmentation_data, "segmentation.data", segmentation_classes,
+    #                               pop_size=50,
+    #                               cog_factor=0.1,
+    #                               soc_factor=0.07,
+    #                               max_velocity=100000,
+    #                               convergence_size=20)
 
     # regression_particle_swarm(machine_data, "machine.data",
     #                           pop_size=100,
@@ -215,21 +215,53 @@ def main():
     #                      pop_size=40,
     #                      )
 
-    # classification_genetic(car_data, "car.data", ["acc", "unacc", "good", "vgood"],
-    #                        population_size=50,
-    #                        crossover_prob=0.5,
-    #                        creep_variance=100,
-    #                        mutation_prob=0.05,
-    #                        tournament_size=2,
-    #                        convergence_size=100)
+    classification_genetic(car_data, "car.data", car_data_classes,
+                           population_size=100,
+                           crossover_prob=0.5,
+                           creep_variance=100,
+                           mutation_prob=0.05,
+                           tournament_size=2,
+                           convergence_size=100)
 
-    # regression_genetic(machine_data, "machine.data",
-    #                    population_size=100,
-    #                    crossover_prob=0.5,
-    #                    creep_variance=1,
-    #                    mutation_prob=0.05,
-    #                    tournament_size=2,
-    #                    convergence_size=100)
+    classification_genetic(abalone_data, "abalone.data", abalone_data_classes,
+                           population_size=100,
+                           crossover_prob=0.5,
+                           creep_variance=100,
+                           mutation_prob=0.05,
+                           tournament_size=2,
+                           convergence_size=100)
+
+    classification_genetic(segmentation_data, "image-segmentation.data", segmentation_classes,
+                           population_size=100,
+                           crossover_prob=0.5,
+                           creep_variance=100,
+                           mutation_prob=0.05,
+                           tournament_size=2,
+                           convergence_size=100)
+
+    regression_genetic(machine_data, "machine.data",
+                       population_size=100,
+                       crossover_prob=0.5,
+                       creep_variance=1,
+                       mutation_prob=0.05,
+                       tournament_size=2,
+                       convergence_size=100)
+
+    regression_genetic(forest_fire_data, "forest_fire.data",
+                       population_size=100,
+                       crossover_prob=0.5,
+                       creep_variance=1,
+                       mutation_prob=0.05,
+                       tournament_size=2,
+                       convergence_size=100)
+
+    regression_genetic(wine_data, "wine.data",
+                       population_size=100,
+                       crossover_prob=0.5,
+                       creep_variance=1,
+                       mutation_prob=0.05,
+                       tournament_size=2,
+                       convergence_size=100)
 
 
 main()
