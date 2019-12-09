@@ -65,12 +65,17 @@ class ParticleSwarm:
             for particle in self.particles:
                 fitness = particle.get_fitness()
                 state = np.array2string(particle.state, precision=2, max_line_width=10000)
-                particle_list.append((fitness, state))
+                velocity = np.array2string(particle.velocity, precision=2, max_line_width=10000)
+                particle_list.append((fitness, state, velocity))
 
             particle_list.sort(key=lambda p: p[0], reverse=True)
             print("\nGeneration #{}".format(generation_num))
-            for particle in particle_list:
-                print("fitness: {}, state: {}".format(particle[0], particle[1]))
+            for particle_i, particle in enumerate(particle_list):
+                print("----------------------------------")
+                print("Particle #{}".format(particle_i+1))
+                print("--fitness: {}".format(particle[0]))
+                print("--state: {}".format(particle[1]))
+                print("--velocity: {}".format(particle[2]))
 
             # (1) Determine the global best particle (based on fitness), store as g_best.
             g_best = self.__get_global_best()
