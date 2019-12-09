@@ -119,10 +119,10 @@ def classification_genetic(data_set, data_set_name, classes, population_size, cr
             test = fold['test']
 
             network = Network(train, test, layer_sizes, classes)
-            genetic_algorithm = Genetic(network, population_size=population_size, crossover_prob=crossover_prob,
-                                        creep_variance=creep_variance, mutation_prob=mutation_prob,
-                                        tournament_size=tournament_size, convergence_size=convergence_size)
-            genetic_algorithm.train()
+            ga = Genetic(network, population_size=population_size, crossover_prob=crossover_prob,
+                         creep_variance=creep_variance, mutation_prob=mutation_prob,
+                         tournament_size=tournament_size, convergence_size=convergence_size)
+            ga.train()
 
             accuracy = network.get_accuracy(test)
             average_accuracy += accuracy / 10
@@ -145,10 +145,10 @@ def regression_genetic(data_set, data_set_name, population_size, crossover_prob,
             test = fold['test']
 
             network = Network(train, test, layer_sizes)
-            genetic_algorithm = Genetic(network, population_size, crossover_prob, creep_variance, mutation_prob,
-                                        tournament_size, convergence_size)
+            ga = Genetic(network, population_size, crossover_prob, creep_variance, mutation_prob,
+                         tournament_size, convergence_size)
 
-            genetic_algorithm.train()
+            ga.train()
 
             error = network.get_error(test)
             average_error += error / 10
@@ -200,13 +200,13 @@ def main():
     #                      pop_size=40,
     #                      )
 
-    classification_genetic(car_data, "car.data", ["acc", "unacc", "good", "vgood"],
-                           population_size=50,
-                           crossover_prob=0.5,
-                           creep_variance=100,
-                           mutation_prob=0.05,
-                           tournament_size=2,
-                           convergence_size=100)
+    # classification_genetic(car_data, "car.data", ["acc", "unacc", "good", "vgood"],
+    #                        population_size=50,
+    #                        crossover_prob=0.5,
+    #                        creep_variance=100,
+    #                        mutation_prob=0.05,
+    #                        tournament_size=2,
+    #                        convergence_size=100)
 
     # regression_genetic(machine_data, "machine.data",
     #                    population_size=100,
@@ -215,5 +215,6 @@ def main():
     #                    mutation_prob=0.05,
     #                    tournament_size=2,
     #                    convergence_size=100)
+
 
 main()

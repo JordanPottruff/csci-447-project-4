@@ -144,19 +144,40 @@ class Genetic:
         fitness_history = []
         global_best_individual = None
         global_best_fitness = 0
+        
+        gen_num = 1
+        individual_list = []
         while True:
+            for individual in self.population:
+                fitness = individual.fitness
+                vector = np.array2string(individual.vector, precision=2, max_line_width=10000)
+                individual_list.append((fitness, vector))
+            individual_list.sort(key=lambda p: p[0], reverse=True)
+            print("\nGeneration #{}".format(gen_num))
+            for individual_i, individual in enumerate(individual_list):
+                print("----------------------------------")
+                print("Individual #{}".format(individual_i+1))
+                print("--fitness: {}".format(individual[0]))
+                print("--vector: {}".format(individual[1]))
+
+            gen_num += 1
             parents = self.parent_selection()
             offspring = self.offspring(parents)
             self.replacement(offspring)
             highest_fitness = 0
+            individual_list = []
+
+
+
+
             for individual in self.population:
+                
+                
                 if individual.fitness > highest_fitness:
                     highest_fitness = individual.fitness
-
                 if individual.fitness > global_best_fitness:
                     global_best_individual = individual
                     global_best_fitness = individual.fitness
-            print("GLOBAL BEST " + str(global_best_fitness))
             fitness_history.append(highest_fitness)
             # print("HIGHEST IN GENERATION: " + str(highest_fitness))
             if len(fitness_history) > self.convergence_size * 2:
@@ -165,52 +186,16 @@ class Genetic:
                 newer_fitness = sum(fitness_history[self.convergence_size:])
                 if newer_fitness <= older_fitness + CONVERGENCE_THRESHOLD:
                     self.network.weights = self.vector_to_matrix(global_best_individual.vector)
+                    print("\nConverged!")
+                    print("Most fit individual: ")
+                    print("--fitness: {}".format(global_best_individual.fitness))
+                    print("--vector: {}".format(np.array2string(global_best_individual.vector, precision=2, max_line_width=10000)))
+                    print("--took " + str(gen_num) + " generation")
                     return
 
 
 
-def test_genetic_machine():
-    population_size = 100
-    crossover_prob = 0.5
-    creep = 1
-    mutation_prob = 0.05
-    tournament_k = 2
-    convergence_size = 100
 
-    data = ds.get_machine_data("../../data/machine.data")
-    training, test = data.partition(.9)
-    net = Network(training, test, [6, 2, 1])
-    ga = Genetic(net, population_size, crossover_prob, creep, mutation_prob, tournament_k, convergence_size)
-    ga.train()
-
-
-def test_genetic_car():
-    population_size = 100
-    crossover_prob = 0.5
-    creep = 1000
-    mutation_prob = 0.05
-    tournament_k = 2
-    convergence_size = 100
-
-    data = ds.get_car_data("../../data/car.data")
-    training, test = data.partition(.9)
-    net = Network(training, test, [6, 5, 4], ["acc", "unacc", "good", "vgood"])
-    ga = Genetic(net, population_size, crossover_prob, creep, mutation_prob, tournament_k, convergence_size)
-    ga.train()
-
-def test_genetic_image():
-    population_size = 100
-    crossover_prob = 0.5
-    creep = 1
-    mutation_prob = 0.05
-    tournament_k = 2
-    convergence_size = 100
-
-    data = ds.get_segmentation_data("../data/segmentation.data")
-    training, test = data.partition(.9)
-    net = Network(training, test, [19, 13, 7], ["BRICKFACE", "SKY", "FOLIAGE", "CEMENT", "WINDOW", "PATH", "GRASS"])
-    ga = Genetic(net, population_size=population_size, crossover_prob=crossover_prob, creep_variance=creep, mutation_prob=mutation_prob, tournament_size=tournament_k, convergence_size=convergence_size)
-    ga.train()
 
 
 
