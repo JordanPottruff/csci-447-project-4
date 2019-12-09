@@ -3,7 +3,6 @@
 
 import random
 import numpy as np
-import src.data as ds
 from src.network import Network
 from functools import reduce
 
@@ -59,7 +58,20 @@ class ParticleSwarm:
         # seen across all runs.
         best_particle, best_particle_fitness = (None, float("-inf"))
 
+        generation_num = 1
         while True:
+            # Video: print population members.
+            particle_list = []
+            for particle in self.particles:
+                fitness = particle.get_fitness()
+                state = np.array2string(particle.state, precision=2, max_line_width=10000)
+                particle_list.append((fitness, state))
+
+            particle_list.sort(key=lambda p: p[0], reverse=True)
+            print("\nGeneration #{}".format(generation_num))
+            for particle in particle_list:
+                print("fitness: {}, state: {}".format(particle[0], particle[1]))
+
             # (1) Determine the global best particle (based on fitness), store as g_best.
             g_best = self.__get_global_best()
             g_best_fitness = g_best.get_fitness()
@@ -88,6 +100,8 @@ class ParticleSwarm:
             for particle in self.particles:
                 particle.move()
                 particle.update_velocity(self.cog_factor, self.soc_factor, self.inertia, g_best.state)
+
+            generation_num += 1
 
 
 LOWER_BOUND = -100000
