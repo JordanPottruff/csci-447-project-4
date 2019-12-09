@@ -55,6 +55,49 @@ def regression_particle_swarm(data_set, data_set_name, pop_size, cog_factor, soc
             average_error += error / 10
             print("----Error of fold {}: {:.2f}".format(fold_i, error))
         print("--Final error: {:.2f}".format(average_error))
+# Runs PSO on a classification data set using 10-fold cross validation.
+def classification_diff_evol(data_set_name, data_set, classes, mutationF, recombinationC, popsize):
+    print("Running classification on: {}".format(data_set_name))
+    network_layouts = get_network_layouts(data_set.num_cols, len(classes))
+
+    folds = data_set.validation_folds(10)
+    for layer_sizes in network_layouts:
+        average_accuracy = 0
+        print("--Testing network layout: {}".format(layer_sizes))
+        for fold_i, fold in enumerate(folds):
+            train = fold['train']
+            test = fold['test']
+
+            network = Network(train, test, layer_sizes, classes)
+            diffevo = DiffEvolution(network, mutationF, recombinationC, popsize)
+            diffevo.run()
+
+            accuracy = network.get_accuracy(test)
+            average_accuracy += accuracy / 10
+            print("----Accuracy of fold {}: {:.2f}".format(fold_i, accuracy))
+        print("--Final accuracy: {:.2f}".format(average_accuracy))
+
+
+def regression_diff_evol(data_set, data_set_name, mutationF, recombinationC, popsize):
+    print("Running regression on: {}".format(data_set_name))
+    network_layouts = get_network_layouts(data_set.num_cols, 1)
+
+    folds = data_set.validation_folds(10)
+    for layer_sizes in network_layouts:
+        average_error = 0
+        print("--Testing network layout: {}".format(layer_sizes))
+        for fold_i, fold in enumerate(folds):
+            train = fold['train']
+            test = fold['test']
+
+            network = Network(train, test, layer_sizes)
+            diffevo = DiffEvolution(network, mutationF, recombinationC, popsize)
+            diffevo.run()
+
+            error = network.get_error(test)
+            average_error += error / 10
+            print("----Error of fold {}: {:.2f}".format(fold_i, error))
+        print("--Final error: {:.2f}".format(average_error))
 
 
 def main():
@@ -88,6 +131,17 @@ def main():
                               inertia=0.05,
                               max_velocity=100000,
                               convergence_size=20)
+    
+    classification_diff_evol(machine_data, "machine.data", ["acc", "unacc", "good", "vgood"],
+                     mutationF=.1,
+                     recombinationC=.9,
+                     pop_size=40,
+                     )
 
+    regression_diff_evol(machine_data, "machine.data",
+                         mutationF=.1,
+                         recombinationC=.9,
+                         pop_size=40,
+                         )
 
 main()
