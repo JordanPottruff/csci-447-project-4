@@ -158,14 +158,13 @@ class Genetic:
                     global_best_fitness = individual.fitness
             print("GLOBAL BEST " + str(global_best_fitness))
             fitness_history.append(highest_fitness)
-            print("HIGHEST IN GENERATION: " + str(highest_fitness))
+            # print("HIGHEST IN GENERATION: " + str(highest_fitness))
             if len(fitness_history) > self.convergence_size * 2:
                 fitness_history.pop(0)
                 older_fitness = sum(fitness_history[:self.convergence_size])
                 newer_fitness = sum(fitness_history[self.convergence_size:])
                 if newer_fitness <= older_fitness + CONVERGENCE_THRESHOLD:
                     self.network.weights = self.vector_to_matrix(global_best_individual.vector)
-                    print(self.network.weights)
                     return
 
 
@@ -175,11 +174,12 @@ def test_genetic_machine():
     creep = 1
     mutation_prob = 0.05
     tournament_k = 2
+    convergence_size = 100
 
     data = ds.get_machine_data("../../data/machine.data")
     training, test = data.partition(.9)
     net = Network(training, test, [6, 2, 1])
-    ga = Genetic(net, population_size, crossover_prob, creep, mutation_prob, tournament_k)
+    ga = Genetic(net, population_size, crossover_prob, creep, mutation_prob, tournament_k, convergence_size)
     ga.train()
 
 
@@ -189,11 +189,12 @@ def test_genetic_car():
     creep = 1000
     mutation_prob = 0.05
     tournament_k = 2
+    convergence_size = 100
 
     data = ds.get_car_data("../../data/car.data")
     training, test = data.partition(.9)
     net = Network(training, test, [6, 5, 4], ["acc", "unacc", "good", "vgood"])
-    ga = Genetic(net, population_size, crossover_prob, creep, mutation_prob, tournament_k)
+    ga = Genetic(net, population_size, crossover_prob, creep, mutation_prob, tournament_k, convergence_size)
     ga.train()
 
 def test_genetic_image():
@@ -202,14 +203,14 @@ def test_genetic_image():
     creep = 1
     mutation_prob = 0.05
     tournament_k = 2
+    convergence_size = 100
 
-    data = ds.get_segmentation_data("../../data/segmentation.data")
+    data = ds.get_segmentation_data("../data/segmentation.data")
     training, test = data.partition(.9)
     net = Network(training, test, [19, 13, 7], ["BRICKFACE", "SKY", "FOLIAGE", "CEMENT", "WINDOW", "PATH", "GRASS"])
-    ga = Genetic(net, population_size=population_size, crossover_prob=crossover_prob, creep_variance=creep, mutation_prob=mutation_prob, tournament_size=tournament_k, convergence_size=100)
+    ga = Genetic(net, population_size=population_size, crossover_prob=crossover_prob, creep_variance=creep, mutation_prob=mutation_prob, tournament_size=tournament_k, convergence_size=convergence_size)
     ga.train()
 
-test_genetic_image()
 
 
 

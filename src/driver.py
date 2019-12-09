@@ -2,6 +2,7 @@ from src.training.particle_swarm import ParticleSwarm
 import src.data as data
 from src.network import Network
 from src.training.diff_evolution import DiffEvolution
+from  src.training.genetic import Genetic
 
 
 def get_network_layouts(num_in, num_out):
@@ -103,6 +104,58 @@ def regression_diff_evol(data_set, data_set_name, mutationF, recombinationC, pop
         print("--Final error: {:.2f}".format(average_error))
 
 
+# Runs genetic algorithm on a classification data set using 10-fold cross validation.
+def classification_genetic(data_set, data_set_name, classes, population_size, crossover_prob, creep_variance,
+                           mutation_prob, tournament_size, convergence_size):
+    print("Running classification on: {}".format(data_set_name))
+    network_layouts = get_network_layouts(data_set.num_cols, len(classes))
+
+    folds = data_set.validation_folds(10)
+    for layer_sizes in network_layouts:
+        average_accuracy = 0
+        print("--Testing network layout: {}".format(layer_sizes))
+        for fold_i, fold in enumerate(folds):
+            train = fold['train']
+            test = fold['test']
+
+            network = Network(train, test, layer_sizes, classes)
+            genetic_algorithm = Genetic(network, population_size=population_size, crossover_prob=crossover_prob,
+                                        creep_variance=creep_variance, mutation_prob=mutation_prob,
+                                        tournament_size=tournament_size, convergence_size=convergence_size)
+            genetic_algorithm.train()
+
+            accuracy = network.get_accuracy(test)
+            average_accuracy += accuracy / 10
+            print("----Accuracy of fold {}: {:.2f}".format(fold_i, accuracy))
+        print("--Final accuracy: {:.2f}".format(average_accuracy))
+
+
+# Runs genetic algorithm on a regression data set using 10-folds cross validation.
+def regression_genetic(data_set, data_set_name, population_size, crossover_prob, creep_variance,
+                       mutation_prob, tournament_size, convergence_size):
+    print("Running regression on: {}".format(data_set_name))
+    network_layouts = get_network_layouts(data_set.num_cols, 1)
+
+    folds = data_set.validation_folds(10)
+    for layer_sizes in network_layouts:
+        average_error = 0
+        print("--Testing network layout: {}".format(layer_sizes))
+        for fold_i, fold in enumerate(folds):
+            train = fold['train']
+            test = fold['test']
+
+            network = Network(train, test, layer_sizes)
+            genetic_algorithm = Genetic(network, population_size, crossover_prob, creep_variance, mutation_prob,
+                                        tournament_size, convergence_size)
+
+            genetic_algorithm.train()
+
+            error = network.get_error(test)
+            average_error += error / 10
+            print("----Error of fold {}: {:.2f}".format(fold_i, error))
+        print("--Final error: {:.2f}".format(average_error))
+
+
 def main():
     # Classification data sets.
     abalone_data = data.get_abalone_data()
@@ -135,16 +188,32 @@ def main():
     #                           max_velocity=100000,
     #                           convergence_size=20)
     
-    classification_diff_evol(machine_data, "machine.data", ["acc", "unacc", "good", "vgood"],
-                     mutationF=.1,
-                     recombinationC=.9,
-                     pop_size=40,
-                     )
+    # classification_diff_evol(machine_data, "machine.data", ["acc", "unacc", "good", "vgood"],
+    #                  mutationF=.1,
+    #                  recombinationC=.9,
+    #                  pop_size=40,
+    #                  )
 
-    regression_diff_evol(machine_data, "machine.data",
-                         mutationF=.1,
-                         recombinationC=.9,
-                         pop_size=40,
-                         )
+    # regression_diff_evol(machine_data, "machine.data",
+    #                      mutationF=.1,
+    #                      recombinationC=.9,
+    #                      pop_size=40,
+    #                      )
+
+    classification_genetic(car_data, "car.data", ["acc", "unacc", "good", "vgood"],
+                           population_size=50,
+                           crossover_prob=0.5,
+                           creep_variance=100,
+                           mutation_prob=0.05,
+                           tournament_size=2,
+                           convergence_size=100)
+
+    # regression_genetic(machine_data, "machine.data",
+    #                    population_size=100,
+    #                    crossover_prob=0.5,
+    #                    creep_variance=1,
+    #                    mutation_prob=0.05,
+    #                    tournament_size=2,
+    #                    convergence_size=100)
 
 main()
