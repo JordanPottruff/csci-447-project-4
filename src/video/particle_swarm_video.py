@@ -98,6 +98,14 @@ class ParticleSwarm:
                 # gains from preventing the algorithm from exiting.
                 if newer_fitness <= older_fitness + CONVERGENCE_THRESHOLD:
                     self.network.weights = best_particle.encode()
+                    print("\nConverged!")
+                    print("Most fit particle: ")
+                    print("--fitness: {}".format(best_particle.get_fitness()))
+                    print("--state: {}".format(np.array2string(best_particle.state, precision=2, max_line_width=10000)))
+                    print("--velocity: {}".format(np.array2string(best_particle.velocity, precision=2, max_line_width=10000)))
+                    print("--weights:")
+                    for weight_matrix in best_particle.encode():
+                        print(np.array2string(weight_matrix, precision=2))
                     return
 
             # (4) Finally, we can go through the particles and update them. This involves moving them according to their

@@ -13,7 +13,6 @@ def test_particle_swarm_image():
     pso.train()
 
     accuracy = network.get_accuracy(test_data)*100
-    print("\nConverged!")
     print("\n\nAccuracy on test set: {}%".format(accuracy))
 
 
