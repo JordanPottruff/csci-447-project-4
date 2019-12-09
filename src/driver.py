@@ -215,53 +215,59 @@ def main():
     #                      pop_size=40,
     #                      )
 
+    population_size = 20
+    crossover_probability = 0.5
+    creep = 100
+    mutation_prop = 0.05
+    tournament_size = 2
+    convergence_size = 50
+
     classification_genetic(car_data, "car.data", car_data_classes,
-                           population_size=100,
-                           crossover_prob=0.5,
-                           creep_variance=100,
-                           mutation_prob=0.05,
-                           tournament_size=2,
-                           convergence_size=100)
+                           population_size=population_size,
+                           crossover_prob=crossover_probability,
+                           creep_variance=creep,
+                           mutation_prob=mutation_prop,
+                           tournament_size=tournament_size,
+                           convergence_size=convergence_size)
 
     classification_genetic(abalone_data, "abalone.data", abalone_data_classes,
-                           population_size=100,
-                           crossover_prob=0.5,
-                           creep_variance=100,
-                           mutation_prob=0.05,
-                           tournament_size=2,
-                           convergence_size=100)
+                           population_size=population_size,
+                           crossover_prob=crossover_probability,
+                           creep_variance=creep,
+                           mutation_prob=mutation_prop,
+                           tournament_size=tournament_size,
+                           convergence_size=convergence_size)
 
     classification_genetic(segmentation_data, "image-segmentation.data", segmentation_classes,
-                           population_size=100,
-                           crossover_prob=0.5,
-                           creep_variance=100,
-                           mutation_prob=0.05,
-                           tournament_size=2,
-                           convergence_size=100)
+                           population_size=population_size,
+                           crossover_prob=crossover_probability,
+                           creep_variance=creep,
+                           mutation_prob=mutation_prop,
+                           tournament_size=tournament_size,
+                           convergence_size=convergence_size)
 
     regression_genetic(machine_data, "machine.data",
-                       population_size=100,
-                       crossover_prob=0.5,
-                       creep_variance=1,
-                       mutation_prob=0.05,
-                       tournament_size=2,
-                       convergence_size=100)
+                       population_size=population_size,
+                       crossover_prob=crossover_probability,
+                       creep_variance=creep,
+                       mutation_prob=mutation_prop,
+                       tournament_size=tournament_size,
+                       convergence_size=convergence_size)
 
     regression_genetic(forest_fire_data, "forest_fire.data",
-                       population_size=100,
-                       crossover_prob=0.5,
-                       creep_variance=1,
-                       mutation_prob=0.05,
-                       tournament_size=2,
-                       convergence_size=100)
+                       population_size=population_size,
+                       crossover_prob=crossover_probability,
+                       creep_variance=creep,
+                       mutation_prob=mutation_prop,
+                       tournament_size=tournament_size,
+                       convergence_size=convergence_size)
 
     regression_genetic(wine_data, "wine.data",
-                       population_size=100,
-                       crossover_prob=0.5,
-                       creep_variance=1,
-                       mutation_prob=0.05,
-                       tournament_size=2,
-                       convergence_size=100)
-
+                       population_size=population_size,
+                       crossover_prob=crossover_probability,
+                       creep_variance=creep,
+                       mutation_prob=mutation_prop,
+                       tournament_size=tournament_size,
+                       convergence_size=convergence_size)
 
 main()

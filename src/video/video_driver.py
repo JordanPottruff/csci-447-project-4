@@ -18,6 +18,7 @@ def test_particle_swarm_image():
     print("\n\nAccuracy on test set: {}%".format(accuracy))
 
 
+# Classification
 def test_genetic_machine():
     population_size = 20
     crossover_prob = 0.5
