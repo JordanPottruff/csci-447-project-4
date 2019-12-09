@@ -83,7 +83,7 @@ class DiffEvolution:
     def run(self):
         """Runs the differential evolution optimization on each individual and finds the most fit individual within
         the space."""
-        iteration = 1
+        iteration = 20
         best_performance = 0
         best_individual = []
         for i in range(iteration):  # For i amt of iterations
@@ -110,8 +110,9 @@ class DiffEvolution:
                     self.network.weights = self.test_pop[loc]  # These weights were better
                     self.population = self.test_pop  # Lets update population to reflect this
 
-        print(best_performance)
-        print(best_individual)
+        #print(best_performance)
+        #print(best_individual)
+        self.network.weights = best_individual
 
     def encode(self, individual):
         """Encodes a vector into matricies that represent the Feed Forward Neural Network"""
@@ -137,11 +138,11 @@ class DiffEvolution:
         return fitness
 
 
-dataset = get_machine_data()
-trainset, testset = dataset.partition(.80)
-#print(trainset)
-# test with number of features as size of input layer, guessing for hidden, and 1 output node size as regression is used
-n = Network(trainset, testset, [6, 3, 3, 3, 1])
-x = DiffEvolution(n, .1, .9, 40)
+# dataset = get_machine_data()
+# trainset, testset = dataset.partition(.80)
+# #print(trainset)
+# # test with number of features as size of input layer, guessing for hidden, and 1 output node size as regression is used
+# n = Network(trainset, testset, [6, 3, 3, 3, 1])
+# x = DiffEvolution(n, .1, .9, 40)
 
 
