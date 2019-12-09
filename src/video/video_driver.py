@@ -128,7 +128,6 @@ def test_genetic_abalone():
 
 # test_particle_swarm_image()
 
-
 # Video Files for the GA: car.data (classification) and machine.data (regression) executes the fastest, on average.
 # test_genetic_image()
 # test_genetic_car()
@@ -138,3 +137,15 @@ def test_genetic_abalone():
 # test_genetic_wine()
 # test_genetic_machine()
 
+def test_diff_evolution_image():
+    image_data = data.get_segmentation_data("../../data/segmentation.data")
+    training_data, test_data = image_data.partition(.8)
+    network = Network(training_data, test_data, [19, 13, 7], ["BRICKFACE", "SKY", "FOLIAGE", "CEMENT", "WINDOW", "PATH", "GRASS"])
+
+    diff_evo = DiffEvolution(network, mutationF=.1, recombinationC=.9, popsize=20)
+    diff_evo.run()
+
+    accuracy = network.get_accuracy(test_data)*100
+    print("\n\nAccuracy on test set: {}%".format(accuracy))
+
+test_diff_evolution_image()
