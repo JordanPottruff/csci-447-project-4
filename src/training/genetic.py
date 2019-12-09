@@ -32,9 +32,6 @@ class Individual:
                 self.vector[gene] += np.random.normal(0, creep_variance)
         self.fitness = self.calc_fitness()
 
-    def __str__(self):
-        return "Vector: " + str(self.vector) + ", Fitness: " + str(self.fitness)
-
     # In classification, the fitness is the accuracy of the network. Therefore, we would want to maximize the accuracy
     # of the population. Inversely, in a regression data set, we would want to reduce and minimize the error. The error
     # is calculated by the inverse accuracy. Here, both metric of fitness is desired to be maximized.
@@ -136,7 +133,7 @@ class Genetic:
         child_b = []
         for gene in range(len(parent_one.vector)):
             if flip(0.5):
-                # Binomial crossover occurs. The children will both receive variations of the parents.
+                # Binomial crossover occurs. The children will both receive variations of genes of the parents.
                 child_a.append(parent_one.vector[gene])
                 child_b.append(parent_two.vector[gene])
             else:

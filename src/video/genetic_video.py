@@ -13,7 +13,7 @@ from src.network import Network
 
 # Search space for the neural network weights, tunable
 LOWER_BOUND = -100000
-UPPER_BOUND =  100000
+UPPER_BOUND = 100000
 
 # The amount of fitness increase used in the average metric to continue the learning process
 CONVERGENCE_THRESHOLD = .0001
