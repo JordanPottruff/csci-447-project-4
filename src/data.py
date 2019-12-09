@@ -174,7 +174,7 @@ def get_segmentation_data(file_name="../data/segmentation.data", normalize=True)
 # Returns the wine data as a DataSet object.
 def get_wine_data(file_name="../data/winequality.data", normalize=True):
     data = read_file(file_name)
-    data = format_data(data, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 11)
+    data = format_data(data, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 11)
 
     wine_data = DataSet(data)
     if normalize:

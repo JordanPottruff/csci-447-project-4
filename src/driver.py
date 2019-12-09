@@ -172,13 +172,28 @@ def main():
     machine_data = data.get_machine_data()
     wine_data = data.get_wine_data()
 
-    # classification_particle_swarm(car_data, "car.data", ["acc", "unacc", "good", "vgood"],
-    #                               pop_size=50,
-    #                               cog_factor=0.1,
-    #                               soc_factor=0.07,
-    #                               inertia=0.01,
-    #                               max_velocity=1000000,
-    #                               convergence_size=20)
+    classification_particle_swarm(abalone_data, "abalone.data", abalone_data_classes,
+                                  pop_size=50,
+                                  cog_factor=0.1,
+                                  soc_factor=0.07,
+                                  inertia=0.01,
+                                  max_velocity=100000,
+                                  convergence_size=20)
+
+    classification_particle_swarm(car_data, "car.data", ["acc", "unacc", "good", "vgood"],
+                                  pop_size=50,
+                                  cog_factor=0.1,
+                                  soc_factor=0.07,
+                                  inertia=0.01,
+                                  max_velocity=1000000,
+                                  convergence_size=20)
+
+    classification_particle_swarm(segmentation_data, "segmentation.data", segmentation_classes,
+                                  pop_size=50,
+                                  cog_factor=0.1,
+                                  soc_factor=0.07,
+                                  max_velocity=100000,
+                                  convergence_size=20)
 
     # regression_particle_swarm(machine_data, "machine.data",
     #                           pop_size=100,
@@ -187,7 +202,7 @@ def main():
     #                           inertia=0.05,
     #                           max_velocity=100000,
     #                           convergence_size=20)
-    
+    #
     # classification_diff_evol(machine_data, "machine.data", ["acc", "unacc", "good", "vgood"],
     #                  mutationF=.1,
     #                  recombinationC=.9,
