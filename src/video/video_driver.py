@@ -142,7 +142,7 @@ def test_diff_evolution_image():
     network = Network(training_data, test_data, [19, 13, 7], ["BRICKFACE", "SKY", "FOLIAGE",
                                                               "CEMENT", "WINDOW", "PATH", "GRASS"])
 
-    diff_evo = DiffEvolution(network, mutationF=.1, recombinationC=.9, popsize=20)
+    diff_evo = DiffEvolution(network, mutation_f=.1, recombination_c=.9, pop_size=20)
     diff_evo.run()
 
     accuracy = network.get_accuracy(test_data)*100
