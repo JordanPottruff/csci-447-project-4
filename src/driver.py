@@ -212,7 +212,8 @@ def main():
                                   cog_factor=0.1,
                                   soc_factor=0.07,
                                   max_velocity=100000,
-                                  convergence_size=20)
+                                  convergence_size=20,
+                                  inertia=0.05)
 
     regression_particle_swarm(machine_data, "machine.data",
                               pop_size=100,
