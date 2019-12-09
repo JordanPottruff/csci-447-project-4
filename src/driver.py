@@ -1,6 +1,7 @@
 from src.training.particle_swarm import ParticleSwarm
 import src.data as data
 from src.network import Network
+from src.training.diff_evolution import DiffEvolution
 
 
 def get_network_layouts(num_in, num_out):
@@ -55,8 +56,10 @@ def regression_particle_swarm(data_set, data_set_name, pop_size, cog_factor, soc
             average_error += error / 10
             print("----Error of fold {}: {:.2f}".format(fold_i, error))
         print("--Final error: {:.2f}".format(average_error))
+
+
 # Runs PSO on a classification data set using 10-fold cross validation.
-def classification_diff_evol(data_set_name, data_set, classes, mutationF, recombinationC, popsize):
+def classification_diff_evol(data_set, data_set_name, classes, mutationF, recombinationC, pop_size):
     print("Running classification on: {}".format(data_set_name))
     network_layouts = get_network_layouts(data_set.num_cols, len(classes))
 
@@ -69,7 +72,7 @@ def classification_diff_evol(data_set_name, data_set, classes, mutationF, recomb
             test = fold['test']
 
             network = Network(train, test, layer_sizes, classes)
-            diffevo = DiffEvolution(network, mutationF, recombinationC, popsize)
+            diffevo = DiffEvolution(network, mutationF, recombinationC, pop_size)
             diffevo.run()
 
             accuracy = network.get_accuracy(test)
@@ -78,7 +81,7 @@ def classification_diff_evol(data_set_name, data_set, classes, mutationF, recomb
         print("--Final accuracy: {:.2f}".format(average_accuracy))
 
 
-def regression_diff_evol(data_set, data_set_name, mutationF, recombinationC, popsize):
+def regression_diff_evol(data_set, data_set_name, mutationF, recombinationC, pop_size):
     print("Running regression on: {}".format(data_set_name))
     network_layouts = get_network_layouts(data_set.num_cols, 1)
 
@@ -91,7 +94,7 @@ def regression_diff_evol(data_set, data_set_name, mutationF, recombinationC, pop
             test = fold['test']
 
             network = Network(train, test, layer_sizes)
-            diffevo = DiffEvolution(network, mutationF, recombinationC, popsize)
+            diffevo = DiffEvolution(network, mutationF, recombinationC, pop_size)
             diffevo.run()
 
             error = network.get_error(test)
@@ -124,13 +127,13 @@ def main():
     #                               max_velocity=1000000,
     #                               convergence_size=20)
 
-    regression_particle_swarm(machine_data, "machine.data",
-                              pop_size=100,
-                              cog_factor=0.2,
-                              soc_factor=0.1,
-                              inertia=0.05,
-                              max_velocity=100000,
-                              convergence_size=20)
+    # regression_particle_swarm(machine_data, "machine.data",
+    #                           pop_size=100,
+    #                           cog_factor=0.2,
+    #                           soc_factor=0.1,
+    #                           inertia=0.05,
+    #                           max_velocity=100000,
+    #                           convergence_size=20)
     
     classification_diff_evol(machine_data, "machine.data", ["acc", "unacc", "good", "vgood"],
                      mutationF=.1,
